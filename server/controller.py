@@ -1,5 +1,5 @@
 from flask import jsonify, make_response
-from nlp import get_hardwords, get_entities, get_diff_topic
+from nlp import get_hardwords, get_entities, get_score_article
 
 
 def process_request(request):
