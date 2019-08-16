@@ -1,6 +1,6 @@
 title = document.getElementsByClassName("title")[0].innerText
 subTitle = document.getElementsByClassName("subtitle")[0].innerText
-main = document.getElementsByClassName("section-0")[0].innerText
+main = document.getElementsByClassName("article-content")[0].innerText
 
 var tosend = title + " " + subTitle + " " + main
 
