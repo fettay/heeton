@@ -10,3 +10,6 @@ pandas
 hebrew_tokenizer
 flask_cors
 requests
+googletrans
+spacy
+

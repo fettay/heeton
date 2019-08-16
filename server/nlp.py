@@ -7,8 +7,8 @@ translator = Translator()
 import spacy
 nlp = spacy.load("en_core_web_md")
 
-with open("model_article_classif/model.bin", "rb") as f:
-    model = pickle.loads(f.read())
+# with open("model_article_classif/model.bin", "rb") as f:
+#     model = pickle.loads(f.read())
 
 
 df_freq = pd.read_csv('stopwords.csv')
@@ -25,7 +25,7 @@ def trad(word, dest='en'):
 
 
 def score_word(word):
-    freq = df.loc[df.word == word]
+    freq = df_freq.loc[df_freq.word == word]
     if len(freq) == 0:
         return -1
     elif freq.pos.iloc[0] == 'properName':
@@ -67,26 +67,21 @@ def get_diff_topic(text):
     return diff_taxo[pred]
 
 
-def get_score_to_letter(score):
-    if score < .3:
-        return 'aleph'
-    elif score < .6:
-        return 'beth'
-    elif score < .8:
-        return 'guimel'
-    else:
-        return 'daleth'
+# def get_score_to_letter(score):
+#     if score < .3:
+#         return 'aleph'
+#     elif score < .6:
+#         return 'beth'
+#     elif score < .8:
+#         return 'guimel'
+#     else:
+#         return 'daleth'
     
     
-def get_score_article(text, hardwords=None):
-    hardwords = hardwords if hardwords else get_hardwords(text)
-    topic_factor = get_diff_topic(text)
-    len_factor = len(text.split()) / 4000
-    diff_factor = len(hardwords) * 20 / len(text.split())
-    score = (topic_factor + len_factor + diff_factor) / 3
-    return get_score_to_letter(score)
-
-
-hardwords = get_hardwords(text)
-entities = get_entities(text)
-score = get_score_article(text, hardwords)
+# def get_score_article(text, hardwords=None):
+#     hardwords = hardwords if hardwords else get_hardwords(text)
+#     topic_factor = get_diff_topic(text)
+#     len_factor = len(text.split()) / 4000
+#     diff_factor = len(hardwords) * 20 / len(text.split())
+#     score = (topic_factor + len_factor + diff_factor) / 3
+#     return get_score_to_letter(score)

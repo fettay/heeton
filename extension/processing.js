@@ -28,8 +28,7 @@ var replaceAllHardwords = function(wordslist){
     wordslist = wordslist['hardwords'];
     result = document.body.innerHTML;
     for(i=0; i<wordslist.length; i++){
-        alert(wordslist[i]);
-        result = replace_word(result, wordslist[i], "selected_word", "Notrans");
+        result = replace_word(result, wordslist[i][0], "selected_word", wordslist[i][1]);
     }
     document.body.innerHTML = result;
 };
