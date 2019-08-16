@@ -1,5 +1,24 @@
 'use strict';
 
+
+function executeScripts(tabId, injectDetailsArray)
+{
+    function createCallback(tabId, injectDetails, innerCallback) {
+        return function () {
+            chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
+        };
+    }
+
+    var callback = null;
+
+    for (var i = injectDetailsArray.length - 1; i >= 0; --i)
+        callback = createCallback(tabId, injectDetailsArray[i], callback);
+
+    if (callback !== null)
+        callback();   // execute outermost function
+}
+
+
 chrome.runtime.onInstalled.addListener(function() {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{
@@ -18,6 +37,15 @@ chrome.tabs.onUpdated.addListener( function (tabId, changeInfo, tab) {
         tabId,
         {file: "scrap.js"}
         );
+        chrome.tabs.executeScript(
+          tabId,
+          {file: 'lib/jquery.js'});
+      // chrome.tabs.executeScript(
+      //     tabId,
+      //     {file: 'processing.js'});
+      chrome.tabs.insertCSS(
+            tabId,
+            {file: 'style.css'});
   }
 });
 
@@ -25,12 +53,9 @@ chrome.tabs.onUpdated.addListener( function (tabId, changeInfo, tab) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   fetch(request.input, request.init).then(function(response) {
     return response.text().then(function(text) {
-      alert(text)
-      sendResponse([{
-        body: text,
-        status: response.status,
-        statusText: response.statusText,
-      }, null]);
+      executeScripts(null, [
+        {code: 'var text2 = ' + JSON.stringify(text)},
+        {file: 'processing.js'}]);
     });
   }, function(error) {
     sendResponse([null, error]);

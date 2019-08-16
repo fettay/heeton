@@ -5,7 +5,6 @@ main = document.getElementsByClassName("section-0")[0].innerText
 var tosend = title + " " + subTitle + " " + main
 
 
-
 fetchResource("https://heeton.azurewebsites.net/api",{
   method: 'POST',
   body: JSON.stringify({text: tosend}),

@@ -17,7 +17,7 @@ def hello():
 
 @app.route("/api", methods=["POST"])
 def filter_words():
-    return process_request(request)
+    response = process_request(request)
 
 
 def get_wiki_url(query):
