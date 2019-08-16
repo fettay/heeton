@@ -7,51 +7,29 @@ translator = Translator()
 import spacy
 nlp = spacy.load("en_core_web_md")
 
+with open('dic_words.bin', 'rb') as handle:
+    dic_words = pickle.load(handle)
+
 # with open("model_article_classif/model.bin", "rb") as f:
 #     model = pickle.loads(f.read())
 
-
-df_freq = pd.read_csv('stopwords.csv')
-df_freq.columns = ['freq', 'pointer', 'word', 'pos']
-df_freq = df_freq[['word', 'pos', 'freq', 'pointer']]
-
-
-diff_taxo = {10: 0, 11: .2, 12: .9, 13: 1, 14: .3, 15: .7, 16: .4, 1700: .5, 1702: .5, 1703: .4, 1704: .6,  1705: .7,
-             1706: .7, 1707: .8, 1708: .9, 1709: .7, 1710: .6, 1711: .6, 18: .4, 19: .2, 20: .8, 21: .3, 22: .3
-}
+# diff_taxo = {10: 0, 11: .2, 12: .9, 13: 1, 14: .3, 15: .7, 16: .4, 1700: .5, 1702: .5, 1703: .4, 1704: .6,  1705: .7,
+#              1706: .7, 1707: .8, 1708: .9, 1709: .7, 1710: .6, 1711: .6, 18: .4, 19: .2, 20: .8, 21: .3, 22: .3}
 
 def trad(word, dest='en'):
     return translator.translate(word, dest=dest).text
 
 
 def score_word(word):
-    freq = df_freq.loc[df_freq.word == word]
-    if len(freq) == 0:
-        return -1
-    elif freq.pos.iloc[0] == 'properName':
-        return 0
-    else:
-        return 1 / np.log(freq.freq.iloc[0])**2
-    
-    
-def get_lemma(word):
-    res = []
-    for elt in nlp(trad(word)):
-        if elt.lemma_ == '-PRON-':
-            res.append(trad(elt.text, 'he'))
-        else:
-            res.append(trad(elt.lemma_, 'he'))
-    return " + ".join(res)
+    freq = dic_words.get(word)
+    return 1 / np.log(freq)**2 if freq else -1
 
 
 def get_hardwords(text ,lemma=False):
     res = [(word, score_word(word)) for word in text.split()]
     res.sort(key=lambda x: x[1], reverse=True)
-    hardwords = set([x[0] for x in res if x[1] > .045])
-    if lemma:
-        return [(w, trad(w), get_lemma(w)) for w in hardwords if len(w) > 3]
-    else:
-        return [(w, trad(w)) for w in hardwords if len(w) > 3]
+    hardwords = set([x[0] for x in res if x[1] > .04])
+    return [(w, trad(w)) for w in hardwords if len(w) > 3]
 
 
 def get_entities(text):
