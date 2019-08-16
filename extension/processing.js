@@ -33,7 +33,13 @@ var replaceAllHardwords = function(wordslist){
     document.body.innerHTML = result;
 };
 
+var displayLevel = function(level){
+    document.getElementsByClassName("back-to-top").innerHTML = level
+}
 
-replaceAllHardwords(JSON.parse(text2));
+var parsed = JSON.parse(text2);
+
+replaceAllHardwords(parsed);
+displayLevel(parsed["score"])
 
 //" + cls + "
