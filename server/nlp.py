@@ -10,11 +10,11 @@ nlp = spacy.load("en_core_web_md")
 with open('dic_words.bin', 'rb') as handle:
     dic_words = pickle.load(handle)
 
-# with open("model_article_classif/model.bin", "rb") as f:
-#     model = pickle.loads(f.read())
+with open("model_article_classif/model.bin", "rb") as f:
+    model = pickle.loads(f.read())
 
-# diff_taxo = {10: 0, 11: .2, 12: .9, 13: 1, 14: .3, 15: .7, 16: .4, 1700: .5, 1702: .5, 1703: .4, 1704: .6,  1705: .7,
-#              1706: .7, 1707: .8, 1708: .9, 1709: .7, 1710: .6, 1711: .6, 18: .4, 19: .2, 20: .8, 21: .3, 22: .3}
+diff_taxo = {10: 0, 11: .2, 12: .9, 13: 1, 14: .3, 15: .7, 16: .4, 1700: .5, 1702: .5, 1703: .4, 1704: .6,  1705: .7,
+             1706: .7, 1707: .8, 1708: .9, 1709: .7, 1710: .6, 1711: .6, 18: .4, 19: .2, 20: .8, 21: .3, 22: .3}
 
 def trad(word, dest='en'):
     return translator.translate(word, dest=dest).text
@@ -45,21 +45,22 @@ def get_diff_topic(text):
     return diff_taxo[pred]
 
 
-# def get_score_to_letter(score):
-#     if score < .3:
-#         return 'aleph'
-#     elif score < .6:
-#         return 'beth'
-#     elif score < .8:
-#         return 'guimel'
-#     else:
-#         return 'daleth'
+def get_score_to_letter(score):
+    if score < .3:
+        return 'aleph'
+    elif score < .6:
+        return 'beth'
+    elif score < .8:
+        return 'guimel'
+    else:
+        return 'daleth'
     
     
-# def get_score_article(text, hardwords=None):
-#     hardwords = hardwords if hardwords else get_hardwords(text)
-#     topic_factor = get_diff_topic(text)
-#     len_factor = len(text.split()) / 4000
-#     diff_factor = len(hardwords) * 20 / len(text.split())
-#     score = (topic_factor + len_factor + diff_factor) / 3
-#     return get_score_to_letter(score)
+def get_score_article(text, hardwords=None):
+    hardwords = hardwords if hardwords else get_hardwords(text)
+    topic_factor = get_diff_topic(text)
+    len_factor = len(text.split()) / 4000
+    diff_factor = len(hardwords) * 20 / len(text.split())
+    score = (topic_factor + len_factor + diff_factor) / 3
+    return score
+    #return get_score_to_letter(score)
